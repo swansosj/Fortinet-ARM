@@ -748,7 +748,7 @@
       },
       {
         "type": "Microsoft.Network/publicIPAddresses",
-        "name": "[variables('publicIP3Name')]",
+        "name": "[variables('publicIP4Name')]",
         "apiVersion": "2022-05-01",
         "location": "[resourceGroup().location]",
         "tags": {
