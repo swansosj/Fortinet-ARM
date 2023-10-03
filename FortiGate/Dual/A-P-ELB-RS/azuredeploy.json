@@ -541,7 +541,6 @@
     "subnet5Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet5Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet5Name')))]",
     "routeServerName": "[if(equals(parameters('routeServerName'),''),concat(parameters('customerName'),'-rtserve-transit-prod-',resourceGroup().location,'-000'),parameters('routeServerName'))]",
     "routeServerID": "[if(equals(parameters('routeServerNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualHubs',variables('routeServerName')),resourceId(parameters('routeServerResourceGroup'),'Microsoft.Network/Microsoft.Network/virtualHubs',variables('routeServerName')))]",
-    "routeServerIpConfigName": "[concat(parameters('routeServerName'),'/',parameters('routeServerName'))]",
     "fgaVmName": "[concat(parameters('customerName'),'-fw-prod-',resourceGroup().location,'-000')]",
     "fgbVmName": "[concat(parameters('customerName'),'-fw-prod-',resourceGroup().location,'-001')]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
@@ -835,7 +834,7 @@
     {
         "condition": "[equals(parameters('routeServerNewOrExisting'), 'new')]",
         "type": "Microsoft.Network/virtualHubs/ipConfigurations",
-        "name": "[variables('routeServerIpConfigName')]",
+        "name": "[concat(variables('routeServerName'),'/',variables('routeServerName'))]",
         "apiVersion": "2023-05-01",
         "dependsOn": [
             "[variables('routeServerID')]",
