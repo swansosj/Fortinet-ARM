@@ -632,13 +632,25 @@
       },
       {
           "type": "Microsoft.Network/virtualHubs/bgpConnections",
-          "name": "[variables('fgaVmName')]",
+          "name": "[concat(variables('routeServerName'),'/fga')]",
           "apiVersion": "2023-05-01",
           "dependsOn": [
               "[variables('routeServerID')]"
           ],
           "properties": {
               "peerIp": "[variables('sn2IPfga')]",
+              "peerAsn": 65001
+          }
+      },
+      {
+          "type": "Microsoft.Network/virtualHubs/bgpConnections",
+          "name": "[concat(variables('routeServerName'),'/fgb')]",
+          "apiVersion": "2023-05-01",
+          "dependsOn": [
+              "[variables('routeServerID')]"
+          ],
+          "properties": {
+              "peerIp": "[variables('sn2IPfgb')]",
               "peerAsn": 65001
           }
       },
