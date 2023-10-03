@@ -335,6 +335,8 @@
       "subnet5Name": "RouteServerSubnet",
       "subnet5ID": "[concat(variables('vnetID'),'/subnets/',variables('subnet5Name'))]",
       "fgaVmName": "[concat(parameters('customerName'), '-fgt-prod-', resourceGroup().location, '-000')]",
+      "fgaVmID": "[resourceId('Microsoft.Compute/virtualMachines',variables('fgaVmName'))]",
+      "fgbVmID": "[resourceId('Microsoft.Compute/virtualMachines',variables('fgaVmName'))]",
       "fgbVmName": "[concat(parameters('customerName'), '-fgt-prod-', resourceGroup().location, '-001')]",
       "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
       "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
@@ -353,7 +355,6 @@
       "routeServerName": "[concat(parameters('customerName'),'-rs-prod-',resourceGroup().location,'-000')]",
       "routeServerID": "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]",
       "routeServerConfigName": "[concat(variables('routeServerName'),'/',variables('routeServerName'))]",
-      "routeServerConfigID": "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations/',variables('routeServerConfigName'))]",
       "fgaNic1Name": "[concat(parameters('customerName'),'-nic-fgt-mgmt-',resourceGroup().location,'-000')]",
       "fgaNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic1Name'))]",
       "fgbNic1Name": "[concat(parameters('customerName'),'-nic-fgt-mgmt-',resourceGroup().location,'-001')]",
@@ -637,7 +638,8 @@
           "apiVersion": "2023-05-01",
           "dependsOn": [
               "[variables('routeServerID')]",
-              "[variables('routeServerConfigID')]"
+              "[variables('fgaVmID')]",
+              "[variables('fgbVmID')]"
           ],
           "properties": {
               "peerIp": "[variables('sn2IPfga')]",
@@ -650,7 +652,8 @@
           "apiVersion": "2023-05-01",
           "dependsOn": [
             "[variables('routeServerID')]",
-            "[variables('routeServerConfigID')]"
+            "[variables('fgaVmID')]",
+            "[variables('fgbVmID')]"
           ],
           "properties": {
               "peerIp": "[variables('sn2IPfgb')]",
