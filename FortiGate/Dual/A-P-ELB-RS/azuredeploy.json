@@ -353,6 +353,7 @@
       "routeServerName": "[concat(parameters('customerName'),'-rs-prod-',resourceGroup().location,'-000')]",
       "routeServerID": "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]",
       "routeServerConfigName": "[concat(variables('routeServerName'),'/',variables('routeServerName'))]",
+      "routeServerConfigID": "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations',variables('routeServerConfigName'))]",
       "fgaNic1Name": "[concat(parameters('customerName'),'-nic-fgt-mgmt-',resourceGroup().location,'-000')]",
       "fgaNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic1Name'))]",
       "fgbNic1Name": "[concat(parameters('customerName'),'-nic-fgt-mgmt-',resourceGroup().location,'-001')]",
@@ -635,7 +636,8 @@
           "name": "[concat(variables('routeServerName'),'/fga')]",
           "apiVersion": "2023-05-01",
           "dependsOn": [
-              "[variables('routeServerID')]"
+              "[variables('routeServerID')]",
+              "[variables('routeServerConfigID')]"
           ],
           "properties": {
               "peerIp": "[variables('sn2IPfga')]",
@@ -647,7 +649,8 @@
           "name": "[concat(variables('routeServerName'),'/fgb')]",
           "apiVersion": "2023-05-01",
           "dependsOn": [
-              "[variables('routeServerID')]"
+            "[variables('routeServerID')]",
+            "[variables('routeServerConfigID')]"
           ],
           "properties": {
               "peerIp": "[variables('sn2IPfgb')]",
