@@ -279,6 +279,13 @@
           "description": "Virtual Network Address prefix"
         }
       },
+      "subnet1Name": {
+        "type": "string",
+        "defaultValue": "ExternalSubnet",
+        "metadata": {
+          "description": "Subnet 1 Name"
+        }
+      },
       "subnet1Prefix": {
         "type": "string",
         "defaultValue": "10.0.1.0/24",
@@ -291,6 +298,13 @@
         "defaultValue": "10.0.1.4",
         "metadata": {
           "description": "Subnet 1 start address, 2 consecutive private IPs are required"
+        }
+      },
+      "subnet2Name": {
+        "type": "string",
+        "defaultValue": "InternalSubnet",
+        "metadata": {
+          "description": "Subnet 2 Name"
         }
       },
       "subnet2Prefix": {
@@ -307,6 +321,13 @@
           "description": "Subnet 2 start address, 3 consecutive private IPs are required"
         }
       },
+      "subnet3Name": {
+        "type": "string",
+        "defaultValue": "HASyncSubnet",
+        "metadata": {
+          "description": "Subnet 3 Name"
+        }
+      },
       "subnet3Prefix": {
         "type": "string",
         "defaultValue": "10.0.3.0/24",
@@ -321,6 +342,13 @@
           "description": "Subnet 3 start address, 2 consecutive private IPs are required"
         }
       },
+      "subnet4Name": {
+        "type": "string",
+        "defaultValue": "ManagementSubnet",
+        "metadata": {
+          "description": "Subnet 4 Name"
+        }
+      },
       "subnet4Prefix": {
         "type": "string",
         "defaultValue": "10.0.4.0/24",
@@ -333,6 +361,13 @@
         "defaultValue": "10.0.4.4",
         "metadata": {
           "description": "Subnet 4 start address, 2 consecutive private IPs are required"
+        }
+      },
+      "subnet5Name": {
+        "type": "string",
+        "defaultValue": "ProtectedASubnet",
+        "metadata": {
+          "description": "Subnet 5 Name"
         }
       },
       "subnet5Prefix": {
@@ -437,16 +472,11 @@
         "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
       },
       "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('customerName'),'-vnet-transit-prod-', resourceGroup().location, '-000'),parameters('vnetName'))]",
-      "subnet1Name": "[concat(parameters('customerName'),'-snet-fw-external-prod-',resourceGroup().location,'-000')]",
-      "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet1Name')))]",
-      "subnet2Name": "[concat(parameters('customerName'),'-snet-fw-internal-prod-',resourceGroup().location,'-000')]",
-      "subnet2Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet2Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet2Name')))]",
-      "subnet3Name": "[concat(parameters('customerName'),'-snet-fw-ha-prod-',resourceGroup().location,'-000')]",
-      "subnet3Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet3Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet3Name')))]",
-      "subnet4Name": "[concat(parameters('customerName'),'-snet-fw-mgmt-prod-',resourceGroup().location,'-000')]",
-      "subnet4Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')))]",
-      "subnet5Name": "RouteServerSubnet",
-      "subnet5Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet5Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet5Name')))]",
+      "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnetName'))]",
+      "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
+      "subnet2Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')))]",
+      "subnet3Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet3Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet3Name')))]",
+      "subnet4Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet4Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet4Name')))]",
       "fgaVmName": "[concat(parameters('customerName'), '-fgt-prod-', resourceGroup().location, '-000')]",
       "fgbVmName": "[concat(parameters('customerName'), '-fgt-prod-', resourceGroup().location, '-001')]",
       "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
@@ -543,9 +573,9 @@
       "sn4IPfgb": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',add(int(variables('sn4IPStartAddress')[3]),1))]",
       "internalLBName": "[concat(parameters('customerName'), '-fw-ilb-prod-', resourceGroup().location, '-000')]",
       "internalLBId": "[resourceID('Microsoft.Network/loadBalancers',variables('internalLBName'))]",
-      "internalLBFEName": "[concat(parameters('customerName'),'-fw-ilb-prod-', resourceGroup().location ,variables('subnet2Name'),'-fe')]",
+      "internalLBFEName": "[concat(parameters('customerName'),'-fw-ilb-prod-', resourceGroup().location ,parameters('subnet2Name'),'-fe')]",
       "internalLBFEId": "[resourceID('Microsoft.Network/loadBalancers/frontendIPConfigurations/',variables('internalLBName'),variables('internalLBFEName'))]",
-      "internalLBBEName": "[concat(parameters('customerName'),'-fw-ilb-prod-',variables('subnet2Name'),'-be')]",
+      "internalLBBEName": "[concat(parameters('customerName'),'-fw-ilb-prod-',parameters('subnet2Name'),'-be')]",
       "internalLBBEId": "[resourceID('Microsoft.Network/loadBalancers/backendAddressPools/',variables('internalLBName'),variables('internalLBBEName'))]",
       "internalLBProbeName": "lbprobe",
       "internalLBProbeId": "[resourceId('Microsoft.Network/loadBalancers/probes/',variables('internalLBName'),variables('internalLBProbeName'))]",
@@ -553,7 +583,7 @@
       "externalLBId": "[resourceId('Microsoft.Network/loadBalancers',variables('externalLBName'))]",
       "externalLBFEName": "[concat(parameters('customerName'),'-fw-elb-prod-', resourceGroup().location,'-fe')]",
       "externalLBFEId": "[resourceID('Microsoft.Network/loadBalancers/frontendIPConfigurations/',variables('externalLBName'),variables('externalLBFEName'))]",
-      "externalLBBEName": "[concat(parameters('customerName'),'-fw-elb-prod-', resourceGroup().location ,variables('subnet1Name'),'-be')]",
+      "externalLBBEName": "[concat(parameters('customerName'),'-fw-elb-prod-', resourceGroup().location ,parameters('subnet1Name'),'-be')]",
       "externalLBBEId": "[resourceID('Microsoft.Network/loadBalancers/backendAddressPools/',variables('externalLBName'),variables('externalLBBEName'))]",
       "externalLBProbeName": "lbprobe",
       "externalLBProbeId": "[resourceId('Microsoft.Network/loadBalancers/probes/',variables('externalLBName'),variables('externalLBProbeName'))]",
@@ -636,31 +666,31 @@
           },
           "subnets": [
             {
-              "name": "[variables('subnet1Name')]",
+              "name": "[parameters('subnet1Name')]",
               "properties": {
                 "addressPrefix": "[parameters('subnet1Prefix')]"
               }
             },
             {
-              "name": "[variables('subnet2Name')]",
+              "name": "[parameters('subnet2Name')]",
               "properties": {
                 "addressPrefix": "[parameters('subnet2Prefix')]"
               }
             },
             {
-              "name": "[variables('subnet3Name')]",
+              "name": "[parameters('subnet3Name')]",
               "properties": {
                 "addressPrefix": "[parameters('subnet3Prefix')]"
               }
             },
             {
-              "name": "[variables('subnet4Name')]",
+              "name": "[parameters('subnet4Name')]",
               "properties": {
                 "addressPrefix": "[parameters('subnet4Prefix')]"
               }
             },
             {
-              "name": "[variables('subnet5Name')]",
+              "name": "[parameters('subnet5Name')]",
               "properties": {
                 "addressPrefix": "[parameters('subnet5Prefix')]",
                 "routeTable": {
