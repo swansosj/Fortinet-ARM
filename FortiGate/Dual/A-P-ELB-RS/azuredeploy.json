@@ -328,7 +328,7 @@
       "subnet1ID": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]",
       "subnet2Name": "[concat(parameters('customerName'),'-snet-fw-internal-prod-', resourceGroup().location,'-000')]",
       "subnet2ID": "[concat(variables('vnetID'),'/subnets/',variables('subnet2Name'))]",
-      "subnet3Name": "[concat(parameters('customerName'),'-snet-fw-external-prod-', resourceGroup().location,'-000')]",
+      "subnet3Name": "[concat(parameters('customerName'),'-snet-fw-ha-prod-', resourceGroup().location,'-000')]",
       "subnet3ID": "[concat(variables('vnetID'),'/subnets/',variables('subnet3Name'))]",
       "subnet4Name": "[concat(parameters('customerName'),'-snet-fw-mgmt-prod-', resourceGroup().location,'-000')]",
       "subnet4ID": "[concat(variables('vnetID'),'/subnets/',variables('subnet4Name'))]",
