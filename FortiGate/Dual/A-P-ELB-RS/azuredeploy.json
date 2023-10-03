@@ -322,7 +322,7 @@
     },
     "subnet2StartAddress": {
       "type": "string",
-      "defaultValue": "10.0.2.0/24",
+      "defaultValue": "10.0.2.4",
       "metadata": {
         "description": "Subnet 2 start address, 3 consecutive private IPs are required"
       }
