@@ -1073,8 +1073,7 @@
           "iv-monitoringEnabled": "false"
         },
         "dependsOn": [
-          "[variables('vnetName')]",
-          "[variables('NSGId')]"
+          "[variables('vnetName')]"
         ],
         "properties": {
           "ipConfigurations": [
@@ -1090,10 +1089,7 @@
             }
           ],
           "enableIPForwarding": true,
-          "enableAcceleratedNetworking": true,
-          "networkSecurityGroup": {
-            "id": "[variables('NSGId')]"
-          }
+          "enableAcceleratedNetworking": true
         }
       },
       {
@@ -1105,8 +1101,7 @@
           "iv-monitoringEnabled": "false"
         },
         "dependsOn": [
-          "[variables('vnetName')]",
-          "[variables('NSGId')]"
+          "[variables('vnetName')]"
         ],
         "properties": {
           "ipConfigurations": [
@@ -1122,10 +1117,7 @@
             }
           ],
           "enableIPForwarding": true,
-          "enableAcceleratedNetworking": true,
-          "networkSecurityGroup": {
-            "id": "[variables('NSGId')]"
-          }
+          "enableAcceleratedNetworking": true
         }
       },
       {
