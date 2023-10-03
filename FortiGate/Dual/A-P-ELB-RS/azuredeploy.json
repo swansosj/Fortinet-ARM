@@ -621,7 +621,7 @@
               "[variables('publicIP4Id')]"
           ],
           "properties": {
-              "privateIPAllocationMethod": "Static",
+              "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
                   "id": "[variables('publicIP4Id')]"
               },
