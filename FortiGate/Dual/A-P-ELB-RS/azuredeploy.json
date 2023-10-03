@@ -247,6 +247,32 @@
         "description": "Public IP Resource Group, this value is required if an existing Public IP is selected"
       }
     },
+    "publicIP4NewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing",
+        "none"
+      ],
+      "metadata": {
+        "description": "Public IP for Route Server. This deployment uses a Standard SKU Azure Load Balancer and requires a Standard SKU public IP. Microsoft Azure offers a migration path from a basic to standard SKU public IP. The management IP's for both FortiGate can be set to none. If no alternative internet access is provided, the SDN Connector functionality for both HA failover and dynamic objects will not work."
+      }
+    },
+    "publicIP4Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of Public IP address, if no name is provided the default name will be the Resource Group Name as the Prefix and '-FGT-B-MGMT-PIP' as the suffix"
+      }
+    },
+    "publicIP4ResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Public IP Resource Group, this value is required if an existing Public IP is selected"
+      }
+    },
     "vnetNewOrExisting": {
       "type": "string",
       "defaultValue": "new",
@@ -384,6 +410,31 @@
         "description": "Subnet 4 start address, 2 consecutive private IPs are required"
       }
     },
+    "routeServerNewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing Route Server"
+      }
+    },
+    "routeServerName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure Route Server, required if utilizing an existing Route Server. If no name is provided the default name will be the Resource Group Name as the Prefix and '-VNET' as the suffix"
+      }
+    },
+    "routeServerResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource Group containing the existing Route Server, leave blank if a new VNET is being utilized"
+      }
+    },
     "serialConsole": {
       "type": "string",
       "defaultValue": "yes",
@@ -479,15 +530,20 @@
       "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
     },
     "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('customerName'),'-vnet-transit-prod-', resourceGroup().location, '-000'),parameters('vnetName'))]",
-    "subnet1Name": "[concat(parameters('customerName'), '-snet-fw-external-prod-', resourceGroup().location, '-000')]",
-    "subnet2Name": "[concat(parameters('customerName'), '-snet-fw-internal-prod-', resourceGroup().location, '-000')]",
-    "subnet3Name": "[concat(parameters('customerName'), '-snet-fw-ha-prod-', resourceGroup().location, '-000')]",
-    "subnet4Name": "[concat(parameters('customerName'), '-snet-fw-mgmt-prod-', resourceGroup().location, '-000')]",
+    "subnet1Name": "[if(equals(parameters('subnet1Name'),''),concat(parameters('customerName'),'-snet-fw-external-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
+    "subnet2Name": "[if(equals(parameters('subnet2Name'),''),concat(parameters('customerName'),'-snet-fw-internal-prod-', resourceGroup().location, '-000'),parameters('subnet2Name'))]",
+    "subnet3Name": "[if(equals(parameters('subnet3Name'),''),concat(parameters('customerName'),'-snet-fw-ha-prod-', resourceGroup().location, '-000'),parameters('subnet3Name'))]",
+    "subnet4Name": "[if(equals(parameters('subnet4Name'),''),concat(parameters('customerName'),'-snet-fw-mgmt-prod-', resourceGroup().location, '-000'),parameters('subnet4Name'))]",
     "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
     "subnet2Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet2Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')))]",
     "subnet3Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet3Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet3Name')))]",
     "subnet4Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet4Name')))]",
     "subnet5Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet5Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet5Name')))]",
+    "routeServerName": "[if(equals(parameters('routeServerName'),''),concat(parameters('customerName'),'-rtserve-transit-prod-',resourceGroup().location,'-000'),parameters('routeServerName'))]",
+    "routeServerID": "[if(equals(parameters('routeServerNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualHubs',variables('routeServerName')),resourceId(parameters('routeServerResourceGroup'),'Microsoft.Network/Microsoft.Network/virtualHubs',variables('routeServerName')))]",
+    "routeServerRouteId": {
+      "id": "[variables('routeServerID')]"
+    },
     "fgaVmName": "[concat(parameters('customerName'),'-fw-prod-',resourceGroup().location,'-000')]",
     "fgbVmName": "[concat(parameters('customerName'),'-fw-prod-',resourceGroup().location,'-001')]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
@@ -528,11 +584,13 @@
     "publicIPAddress2Id": {
       "id": "[variables('publicIP2Id')]"
     },
-    "publicIP3Name": "[if(equals(parameters('publicIP3Name'),''),concat(parameters('customerName'),'-fw-mgmt-prod',resourceGroup().location,'-001'),parameters('publicIP3Name'))]",
+    "publicIP3Name": "[if(equals(parameters('publicIP3Name'),''),concat(parameters('customerName'),'-fw-mgmt-prod-',resourceGroup().location,'-001'),parameters('publicIP3Name'))]",
     "publicIP3Id": "[if(equals(parameters('publicIP3NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP3Name')),resourceId(parameters('publicIP3ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP3Name')))]",
     "publicIPAddress3Id": {
       "id": "[variables('publicIP3Id')]"
     },
+    "publicIP4Name": "[if(equals(parameters('publicIP4Name'),''),concat(parameters('customerName'),'-pip-rtserve-prod',resourceGroup().location,'-001'),parameters('publicIP4Name'))]",
+    "publicIP4Id": "[if(equals(parameters('publicIP4NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP4Name')),resourceId(parameters('publicIP4ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP4Name')))]",
     "NSGName": "[concat(parameters('customerName'),'-nsg-fw-default-prod', resourceGroup().location, '-000')]",
     "NSGId": "[resourceID('Microsoft.Network/networkSecurityGroups/',variables('NSGName'))]",
     "sn1IPArray": "[split(parameters('subnet1Prefix'),'.')]",
@@ -582,6 +640,18 @@
     "sn4IPStartAddress": "[split(parameters('subnet4StartAddress'),'.')]",
     "sn4IPfga": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',int(variables('sn4IPStartAddress')[3]))]",
     "sn4IPfgb": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',add(int(variables('sn4IPStartAddress')[3]),1))]",
+    "sn5IPArray": "[split(parameters('subnet5Prefix'),'.')]",
+    "sn5IPArray2ndString": "[string(variables('sn5IPArray')[3])]",
+    "sn5IPArray2nd": "[split(variables('sn5IPArray2ndString'),'/')]",
+    "sn5CIDRmask": "[string(int(variables('sn5IPArray2nd')[1]))]",
+    "sn5IPArray3": "[string(add(int(variables('sn5IPArray2nd')[0]),1))]",
+    "sn5IPArray2": "[string(int(variables('sn5IPArray')[2]))]",
+    "sn5IPArray1": "[string(int(variables('sn5IPArray')[1]))]",
+    "sn5IPArray0": "[string(int(variables('sn5IPArray')[0]))]",
+    "sn5GatewayIP": "[concat(variables('sn5IPArray0'),'.',variables('sn5IPArray1'),'.',variables('sn5IPArray2'),'.',variables('sn5IPArray3'))]",
+    "sn5IPStartAddress": "[split(parameters('subnet5StartAddress'),'.')]",
+    "sn5IPrsIP1": "[concat(variables('sn5IPArray0'),'.',variables('sn5IPArray1'),'.',variables('sn5IPArray2'),'.',int(variables('sn5IPStartAddress')[3]))]",
+    "sn5IPrsIP2": "[concat(variables('sn5IPArray0'),'.',variables('sn5IPArray1'),'.',variables('sn5IPArray2'),'.',add(int(variables('sn5IPStartAddress')[3]),1))]",
     "internalLBName": "[concat(parameters('customerName'),'-ilb-prod-',resourceGroup().location,'-000')]",
     "internalLBId": "[resourceID('Microsoft.Network/loadBalancers',variables('internalLBName'))]",
     "internalLBFEName": "[concat(parameters('customerName'),'-ilb-fe-prod-',resourceGroup().location,'-000')]",
@@ -677,7 +747,7 @@
         },
         "subnets": [
           {
-            "name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-external-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
+            "name": "[variables('subnet1Name')]",
             "properties": {
               "addressPrefix": "[parameters('subnet1Prefix')]",
               "routeTable": {
@@ -686,19 +756,19 @@
             }
           },
           {
-            "name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-internal-prod-', resourceGroup().location, '-000'),parameters('subnet2Name'))]",
+            "name": "[variables('subnet2Name')]",
             "properties": {
               "addressPrefix": "[parameters('subnet2Prefix')]"
             }
           },
           {
-            "name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-ha-prod-', resourceGroup().location, '-000'),parameters('subnet3Name'))]",
+            "name": "[variables('subnet3Name')]",
             "properties": {
               "addressPrefix": "[parameters('subnet3Prefix')]"
             }
           },
           {
-            "name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-mgmt-prod-', resourceGroup().location, '-000'),parameters('subnet4Name'))]",
+            "name": "[variables('subnet4Name')]",
             "properties": {
               "addressPrefix": "[parameters('subnet4Prefix')]",
               "routeTable": {
@@ -734,6 +804,55 @@
           }
         ]
       }
+    },
+    {
+        "condition": "[equals(parameters('routeServerNewOrExisting'), 'new')]",
+        "type": "Microsoft.Network/virtualHubs",
+        "name": "[variables('routeServerName')]",
+        "apiVersion": "2023-05-01",
+        "location": "[parameters('location')]",
+        "kind": "RouteServer",
+        "dependsOn": [
+          "[variables('vnetName')]"
+        ],
+        "properties": {
+            "virtualHubRouteTableV2s": [],
+            "virtualRouterAsn": 65515,
+            "virtualRouterIps": [
+                "[variables('sn5IPrsIP1')]",
+                "[variables('sn5IPrsIP2')]"
+            ],
+            "routeTable": {
+                "routes": []
+            },
+            "virtualRouterAutoScaleConfiguration": {
+                "minCapacity": 2
+            },
+            "sku": "Standard",
+            "routingState": "Provisioned",
+            "allowBranchToBranchTraffic": false,
+            "hubRoutingPreference": "VpnGateway"
+        }
+    },
+    {
+        "condition": "[equals(parameters('routeServerNewOrExisting'), 'new')]",
+        "type": "Microsoft.Network/virtualHubs/ipConfigurations",
+        "name": "[concat(parameters('routeServerName'), '/', parameters('routeServerName'))]",
+        "apiVersion": "2023-05-01",
+        "dependsOn": [
+            "[variables('routeServerRouteId')]",
+            "[variables('publicIP4Id')]",
+            "[variables('subnet5Id')]"
+        ],
+        "properties": {
+            "privateIPAllocationMethod": "Dynamic",
+            "publicIPAddress": {
+                "id": "[variables('publicIP4Id')]"
+            },
+            "subnet": {
+                "id": "[variables('subnet5Id')]"
+            }
+        }
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -817,6 +936,23 @@
       "condition": "[equals(parameters('publicIP3NewOrExisting'), 'new')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIP3Name')]",
+      "apiVersion": "2022-05-01",
+      "location": "[parameters('location')]",
+      "tags": {
+        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+      },
+      "sku": {
+        "name": "Standard"
+      },
+      "zones": "[variables('pipZones')]",
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "condition": "[equals(parameters('publicIP4NewOrExisting'), 'new')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIP4Name')]",
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
