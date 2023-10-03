@@ -22,6 +22,7 @@
     },
     "fortiGateNamePrefix": {
       "type": "string",
+      "defaultValue": "name",
       "metadata": {
         "description": "Naming prefix for all deployed resources. The FortiGate VMs will have the suffix '-FGT-A' and '-FGT-B'. For example if the prefix is 'ACME01' the FortiGates will be named 'ACME01-FGT-A' and 'ACME01-FGT-B'"
       }
