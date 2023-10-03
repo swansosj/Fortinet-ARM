@@ -837,7 +837,8 @@
         "name": "[concat(variables('routeServerName'),'/',variables('routeServerName'))]",
         "apiVersion": "2023-05-01",
         "dependsOn": [
-            "[variables('publicIP4Id')]"
+            "[variables('publicIP4Id')]",
+            "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]"
         ],
         "properties": {
             "privateIPAllocationMethod": "Dynamic",
