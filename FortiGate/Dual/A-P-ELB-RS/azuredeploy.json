@@ -837,9 +837,7 @@
         "name": "[concat(variables('routeServerName'),'/',variables('routeServerName'))]",
         "apiVersion": "2023-05-01",
         "dependsOn": [
-            "[variables('routeServerID')]",
-            "[variables('publicIP4Id')]",
-            "[variables('routeServerName')]"
+            "[variables('publicIP4Id')]"
         ],
         "properties": {
             "privateIPAllocationMethod": "Dynamic",
