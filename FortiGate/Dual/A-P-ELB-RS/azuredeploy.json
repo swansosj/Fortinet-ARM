@@ -839,7 +839,7 @@
         "dependsOn": [
             "[variables('routeServerID')]",
             "[variables('publicIP4Id')]",
-            "[variables('subnet5Id')]"
+            "[parameters('routeServerName')]"
         ],
         "properties": {
             "privateIPAllocationMethod": "Dynamic",
