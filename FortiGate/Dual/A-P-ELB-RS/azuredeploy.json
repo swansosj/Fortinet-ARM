@@ -830,8 +830,8 @@
     },
     {
         "type": "Microsoft.Network/virtualHubs/bgpConnections",
-        "apiVersion": "2023-04-01",
         "name": "[concat(variables('routeServerName'), '/fga')]",
+        "apiVersion": "2023-04-01",
         "dependsOn": [
             "[resourceId('Microsoft.Network/virtualHubs', parameters('routeServerName'))]"
         ],
