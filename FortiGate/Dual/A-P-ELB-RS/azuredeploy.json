@@ -815,10 +815,6 @@
         "properties": {
             "virtualHubRouteTableV2s": [],
             "virtualRouterAsn": 65515,
-            "virtualRouterIps": [
-                "[variables('sn5IPrsIP1')]",
-                "[variables('sn5IPrsIP2')]"
-            ],
             "routeTable": {
                 "routes": []
             },
@@ -841,11 +837,6 @@
             "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]"
         ],
         "properties": {
-            "privateIPAllocationMethod": "Static",
-            "privateIPadress": [
-              "[variables('sn5IPrsIP1')]",
-              "[variables('sn5IPrsIP2')]"
-            ],
             "publicIPAddress": {
                 "id": "[variables('publicIP4Id')]"
             },
