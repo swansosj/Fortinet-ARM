@@ -435,6 +435,13 @@
         "description": "Resource Group containing the existing Route Server, leave blank if a new VNET is being utilized"
       }
     },
+    "bgpASN": {
+      "type": "int",
+      "defaultValue": 65001,
+      "metadata": {
+        "description": "BGP ASN of FortiGate Firewalls"
+      }
+    },
     "serialConsole": {
       "type": "string",
       "defaultValue": "yes",
@@ -714,7 +721,7 @@
       "apiVersion": "2022-08-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "properties": {
         "platformFaultDomainCount": 2,
@@ -731,7 +738,7 @@
       "name": "[variables('vnetName')]",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('routeTableId')]"
@@ -788,7 +795,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "properties": {
         "routes": [
@@ -850,12 +857,36 @@
         }
     },
     {
+        "type": "Microsoft.Network/virtualHubs/bgpConnections",
+        "apiVersion": "2023-05-01",
+        "name": "[concat(parameters('routeServerName'), '/fga')]",
+        "dependsOn": [
+            "[resourceId('Microsoft.Network/virtualHubs', parameters('routeServerName'))]"
+        ],
+        "properties": {
+            "peerIp": "[variables('sn1IPfga')]",
+            "peerAsn": "[parameters('bgpASN')]"
+        }
+    },
+    {
+        "type": "Microsoft.Network/virtualHubs/bgpConnections",
+        "apiVersion": "2023-05-01",
+        "name": "[concat(parameters('routeServerName'), '/fga')]",
+        "dependsOn": [
+            "[resourceId('Microsoft.Network/virtualHubs', parameters('routeServerName'))]"
+        ],
+        "properties": {
+            "peerIp": "[variables('sn1IPfgb')]",
+            "peerAsn": "[parameters('bgpASN')]"
+        }
+    },
+    {
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('NSGName')]",
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "properties": {
         "securityRules": [
@@ -897,7 +928,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "sku": {
         "name": "Standard"
@@ -917,7 +948,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "sku": {
         "name": "Standard"
@@ -934,7 +965,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "sku": {
         "name": "Standard"
@@ -951,7 +982,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "sku": {
         "name": "Standard"
@@ -967,7 +998,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "sku": {
         "name": "Standard"
@@ -1050,7 +1081,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "sku": {
         "name": "Standard"
@@ -1117,7 +1148,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -1155,7 +1186,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -1193,7 +1224,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -1231,7 +1262,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -1269,7 +1300,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -1301,7 +1332,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -1333,7 +1364,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -1366,7 +1397,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -1399,7 +1430,7 @@
       "apiVersion": "2022-08-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "identity": {
         "type": "SystemAssigned"
@@ -1477,7 +1508,7 @@
       "apiVersion": "2022-08-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "identity": {
         "type": "SystemAssigned"
