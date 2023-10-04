@@ -829,20 +829,6 @@
         }
     },
     {
-        "type": "Microsoft.Network/virtualHubs/bgpConnections",
-        "name": "[concat(variables('routeServerName'), '/fga')]",
-        "apiVersion": "2023-04-01",
-        "dependsOn": [
-            "[variables('publicIP4Id')]",
-            "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]",
-            "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic2Name'))]"
-        ],
-        "properties": {
-            "peerIp": "[variables('sn2IPfga')]",
-            "peerAsn": 65001
-        }
-    },
-    {
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('NSGName')]",
       "apiVersion": "2022-05-01",
