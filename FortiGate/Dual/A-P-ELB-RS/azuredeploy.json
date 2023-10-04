@@ -834,7 +834,7 @@
         "apiVersion": "2023-04-01",
         "dependsOn": [
             "[variables('publicIP4Id')]",
-            "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations',variables('routeServerName'))]"
+            "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]"
         ],
         "properties": {
             "peerIp": "[variables('sn2IPfga')]",
