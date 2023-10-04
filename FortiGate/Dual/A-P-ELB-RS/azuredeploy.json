@@ -841,7 +841,7 @@
             "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]"
         ],
         "properties": {
-            "privateIPAllocationMethod": "Dynamic",
+            "privateIPAllocationMethod": "Static",
             "publicIPAddress": {
                 "id": "[variables('publicIP4Id')]"
             },
