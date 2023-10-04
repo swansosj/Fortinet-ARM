@@ -815,6 +815,10 @@
         "properties": {
             "virtualHubRouteTableV2s": [],
             "virtualRouterAsn": 65515,
+            "virtualRouterIps": [
+                "[variables('sn5IPrsIP1')]",
+                "[variables('sn5IPrsIP2')]"
+            ],
             "routeTable": {
                 "routes": []
             },
