@@ -428,20 +428,6 @@
         "description": "Name of the Azure Route Server, required if utilizing an existing Route Server. If no name is provided the default name will be the Resource Group Name as the Prefix and '-VNET' as the suffix"
       }
     },
-    "routeServerResourceGroup": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Resource Group containing the existing Route Server, leave blank if a new VNET is being utilized"
-      }
-    },
-    "bgpASN": {
-      "type": "int",
-      "defaultValue": 65001,
-      "metadata": {
-        "description": "BGP ASN of FortiGate Firewalls"
-      }
-    },
     "serialConsole": {
       "type": "string",
       "defaultValue": "yes",
@@ -519,14 +505,6 @@
       "metadata": {
         "description": "Location for all resources."
       }
-    },
-    "fortinetTags": {
-      "type": "object",
-      "defaultValue": {
-        "publisher": "Fortinet",
-        "template": "Active-Passive-ELB-ILB",
-        "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831AP"
-      }
     }
   },
   "variables": {
@@ -547,9 +525,6 @@
     "subnet4Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet4Name')))]",
     "subnet5Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet5Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet5Name')))]",
     "routeServerName": "[if(equals(parameters('routeServerNewOrExisting'),'new'),concat(parameters('customerName'),'-rtserve-transit-prod-',resourceGroup().location,'-000'),parameters('routeServerName'))]",
-    "bgpPeer1": "[concat(parameters('routeServerName'),'/fga')]",
-    "bgpPeer2": "[concat(parameters('routeServerName'),'/fgb')]",
-    "routeServerID": "[if(equals(parameters('routeServerNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualHubs',variables('routeServerName')),resourceId(parameters('routeServerResourceGroup'),'Microsoft.Network/Microsoft.Network/virtualHubs',variables('routeServerName')))]",
     "fgaVmName": "[concat(parameters('customerName'),'-fw-prod-',resourceGroup().location,'-000')]",
     "fgbVmName": "[concat(parameters('customerName'),'-fw-prod-',resourceGroup().location,'-001')]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
@@ -647,14 +622,9 @@
     "sn4IPfga": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',int(variables('sn4IPStartAddress')[3]))]",
     "sn4IPfgb": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',add(int(variables('sn4IPStartAddress')[3]),1))]",
     "sn5IPArray": "[split(parameters('subnet5Prefix'),'.')]",
-    "sn5IPArray2ndString": "[string(variables('sn5IPArray')[3])]",
-    "sn5IPArray2nd": "[split(variables('sn5IPArray2ndString'),'/')]",
-    "sn5CIDRmask": "[string(int(variables('sn5IPArray2nd')[1]))]",
-    "sn5IPArray3": "[string(add(int(variables('sn5IPArray2nd')[0]),1))]",
     "sn5IPArray2": "[string(int(variables('sn5IPArray')[2]))]",
     "sn5IPArray1": "[string(int(variables('sn5IPArray')[1]))]",
     "sn5IPArray0": "[string(int(variables('sn5IPArray')[0]))]",
-    "sn5GatewayIP": "[concat(variables('sn5IPArray0'),'.',variables('sn5IPArray1'),'.',variables('sn5IPArray2'),'.',variables('sn5IPArray3'))]",
     "sn5IPStartAddress": "[split(parameters('subnet5StartAddress'),'.')]",
     "sn5IPrsIP1": "[concat(variables('sn5IPArray0'),'.',variables('sn5IPArray1'),'.',variables('sn5IPArray2'),'.',int(variables('sn5IPStartAddress')[3]))]",
     "sn5IPrsIP2": "[concat(variables('sn5IPArray0'),'.',variables('sn5IPArray1'),'.',variables('sn5IPArray2'),'.',add(int(variables('sn5IPStartAddress')[3]),1))]",
@@ -856,30 +826,6 @@
             "subnet": {
                 "id": "[variables('subnet5Id')]"
             }
-        }
-    },
-    {
-        "type": "Microsoft.Network/virtualHubs/bgpConnections",
-        "apiVersion": "2023-05-01",
-        "name": "[variables('bgpPeer1')]",
-        "dependsOn": [
-            "[resourceId('Microsoft.Network/virtualHubs', parameters('routeServerName'))]"
-        ],
-        "properties": {
-            "peerIp": "[variables('sn1IPfga')]",
-            "peerAsn": "[parameters('bgpASN')]"
-        }
-    },
-    {
-        "type": "Microsoft.Network/virtualHubs/bgpConnections",
-        "apiVersion": "2023-05-01",
-        "name": "[variables('bgpPeer2')]",
-        "dependsOn": [
-            "[resourceId('Microsoft.Network/virtualHubs', parameters('routeServerName'))]"
-        ],
-        "properties": {
-            "peerIp": "[variables('sn1IPfgb')]",
-            "peerAsn": "[parameters('bgpASN')]"
         }
     },
     {
