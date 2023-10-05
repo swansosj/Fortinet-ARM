@@ -625,7 +625,7 @@
             }
           },
           {
-            "name": "[parameters('subnet3Name')]",
+            "name": "[variables('subnet3Name')]",
             "properties": {
               "addressPrefix": "[parameters('subnet3Prefix')]"
             }
@@ -745,10 +745,7 @@
       },
       "zones": "[variables('pipZones')]",
       "properties": {
-        "publicIPAllocationMethod": "[parameters('publicIP2AddressType')]",
-        "dnsSettings": {
-          "domainNameLabel": "[concat(toLower(variables('fgtVmName')), '-', uniquestring(resourceGroup().id))]"
-        }
+        "publicIPAllocationMethod": "[parameters('publicIP2AddressType')]"
       }
     },
     {
