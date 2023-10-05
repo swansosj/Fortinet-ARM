@@ -519,6 +519,7 @@
     "customDataCombined": "[concat(variables('customDataHeader'),variables('customDataBody'),variables('customDataLicenseHeader'), variables('customDataFortiFlex'), parameters('fortiGateLicenseBYOL'), variables('customDataFooter'))]",
     "fgtCustomData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOL'),''),equals(parameters('fortiGateLicenseFortiFlex'),'')),variables('customDataBody'),variables('customDataCombined')))]",
     "routeTableName": "[concat(parameters('customerName'),'-rt-transit-prod-',resourceGroup().location, '-000')]",
+    "routeTableID": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]",
     "fgtNic1Name": "[concat(parameters('customerName'), '-nic-fw-external-prod-', resourceGroup().location, '-000')]",
     "fgtNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgtNic1Name'))]",
     "fgtNic2Name": "[concat(parameters('customerName'), '-nic-fw-internal-prod-', resourceGroup().location, '-000')]",
@@ -621,7 +622,10 @@
           {
             "name": "[variables('subnet2Name')]",
             "properties": {
-              "addressPrefix": "[parameters('subnet2Prefix')]"
+              "addressPrefix": "[parameters('subnet2Prefix')]",
+              "routeTable": {
+                "id": "[variables('routeTableId')]"
+              }
             }
           },
           {
@@ -725,10 +729,7 @@
       },
       "zones": "[variables('pipZones')]",
       "properties": {
-        "publicIPAllocationMethod": "[parameters('publicIP1AddressType')]",
-        "dnsSettings": {
-          "domainNameLabel": "[concat(toLower(variables('fgtVmName')), '-', uniquestring(resourceGroup().id))]"
-        }
+        "publicIPAllocationMethod": "[parameters('publicIP1AddressType')]"
       }
     },
     {
