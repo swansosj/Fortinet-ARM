@@ -525,6 +525,7 @@
     "subnet4Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet4Name')))]",
     "subnet5Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet5Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet5Name')))]",
     "routeServerName": "[if(equals(parameters('routeServerNewOrExisting'),'new'),concat(parameters('customerName'),'-rtserve-transit-prod-',resourceGroup().location,'-000'),parameters('routeServerName'))]",
+    "routeServerIpID": "[concat(resourceId('Microsoft.Network/virtualHubs', variables('routeServerName')), '/ipconipConfigurations/', variables('routeServerName'))]",
     "fgaVmName": "[concat(parameters('customerName'),'-fw-prod-',resourceGroup().location,'-000')]",
     "fgbVmName": "[concat(parameters('customerName'),'-fw-prod-',resourceGroup().location,'-001')]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
@@ -816,7 +817,7 @@
         "name": "[concat(variables('routeServerName'), '/fga')]",
         "dependsOn": [
             "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]",
-            "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations',variables('routeServerName'),variables('routeServerName'))]"
+            "[variables('routeServerIpID')]"
         ],
         "properties": {
             "peerIp": "[variables('sn2IPfga')]",
