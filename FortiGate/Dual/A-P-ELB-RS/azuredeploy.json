@@ -785,7 +785,7 @@
         "condition": "[equals(parameters('routeServerNewOrExisting'), 'new')]",
         "type": "Microsoft.Network/virtualHubs",
         "name": "[variables('routeServerName')]",
-        "apiVersion": "2023-05-01",
+        "apiVersion": "2023-04-01",
         "location": "[parameters('location')]",
         "kind": "RouteServer",
         "dependsOn": [
@@ -814,7 +814,7 @@
         "condition": "[equals(parameters('routeServerNewOrExisting'), 'new')]",
         "type": "Microsoft.Network/virtualHubs/ipConfigurations",
         "name": "[concat(variables('routeServerName'),'/',variables('routeServerName'))]",
-        "apiVersion": "2023-05-01",
+        "apiVersion": "2023-04-01",
         "dependsOn": [
             "[variables('publicIP4Id')]",
             "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]"
