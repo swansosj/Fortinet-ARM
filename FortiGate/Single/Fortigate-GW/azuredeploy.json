@@ -265,17 +265,6 @@
         "description": "Type of public IP address"
       }
     },
-    "publicIP1SKU": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
-      }
-    },
     "publicIP2NewOrExisting": {
       "type": "string",
       "defaultValue": "new",
@@ -300,28 +289,6 @@
       "defaultValue": "",
       "metadata": {
         "description": "Public IP Resource Group, this value is required if an existing Public IP is selected"
-      }
-    },
-    "publicIP2AddressType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
-      }
-    },
-    "publicIP2SKU": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
       }
     },
     "vnetNewOrExisting": {
@@ -721,11 +688,11 @@
         "iv-monitoringEnabled": "false"
       },
       "sku": {
-        "name": "[parameters('publicIP1SKU')]"
+        "name": "Standard"
       },
       "zones": "[variables('pipZones')]",
       "properties": {
-        "publicIPAllocationMethod": "[parameters('publicIP1AddressType')]"
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
@@ -738,11 +705,11 @@
         "iv-monitoringEnabled": "false"
       },
       "sku": {
-        "name": "[parameters('publicIP2SKU')]"
+        "name": "Standard"
       },
       "zones": "[variables('pipZones')]",
       "properties": {
-        "publicIPAllocationMethod": "[parameters('publicIP2AddressType')]"
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
