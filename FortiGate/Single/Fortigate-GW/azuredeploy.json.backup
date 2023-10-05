@@ -532,10 +532,16 @@
     },
     {
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
-      "name": "[variables('vnetName')]",
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2023-04-01",
-      "location": "[resourceGroup().location]",
+      "apiVersion": "2022-05-01",
+      "name": "[variables('vnetName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "iv-monitoringEnabled": "false"
+      },
+      "dependsOn": [
+        "[variables('routeTableId')]"
+      ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -546,13 +552,22 @@
           {
             "name": "[variables('subnet1Name')]",
             "properties": {
-              "addressPrefix": "[parameters('subnet1Prefix')]"
+              "addressPrefix": "[parameters('subnet1Prefix')]",
+              "routeTable": {
+                "id": "[variables('routeTableId')]"
+              }
             }
           },
           {
             "name": "[variables('subnet2Name')]",
             "properties": {
               "addressPrefix": "[parameters('subnet2Prefix')]"
+            }
+          },
+          {
+            "name": "[parameters('subnet3Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnet3Prefix')]"
             }
           }
         ]
