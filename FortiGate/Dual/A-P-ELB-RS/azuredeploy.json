@@ -835,7 +835,8 @@
         "apiVersion": "2023-04-01",
         "name": "[format('{0}/{1}', variables('routeServerName'), variables('routeServerBgp1'))]",
         "dependsOn": [
-            "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]"
+            "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]",
+            "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', variables('routeServerName'), variables('routeServerIpName'))]"
         ],
         "properties": {
             "peerIp": "[variables('sn2IPfga')]",
