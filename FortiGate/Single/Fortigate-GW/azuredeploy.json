@@ -593,7 +593,7 @@
       "apiVersion": "2022-08-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "properties": {
         "platformFaultDomainCount": 2,
@@ -647,7 +647,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "properties": {
         "routes": [
@@ -683,7 +683,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "properties": {
         "securityRules": [
@@ -725,7 +725,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "sku": {
         "name": "[parameters('publicIP1SKU')]"
@@ -742,7 +742,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "sku": {
         "name": "[parameters('publicIP2SKU')]"
@@ -758,7 +758,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -791,7 +791,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -823,7 +823,7 @@
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
         "[variables('vnetName')]",
@@ -855,7 +855,7 @@
       "name": "[variables('fgtVmName')]",
       "apiVersion": "2022-08-01",
       "tags": {
-        "provider": "[toUpper(parameters('fortinetTags').provider)]"
+        "iv-monitoringEnabled": "false"
       },
       "location": "[parameters('location')]",
       "identity": {
