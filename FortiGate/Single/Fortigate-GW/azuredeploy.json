@@ -482,13 +482,6 @@
       "metadata": {
         "description": "Location for all resources."
       }
-    },
-    "fortinetTags": {
-      "type": "object",
-      "defaultValue": {
-        "publisher": "Fortinet",
-        "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831VM"
-      }
     }
   },
   "variables": {
