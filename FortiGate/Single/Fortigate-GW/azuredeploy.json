@@ -461,8 +461,8 @@
     "customDataFortiFlex": "[if(equals(parameters('fortiGateLicenseFortiFlex'),''),'',concat('LICENSE-TOKEN:',parameters('fortiGateLicenseFortiFlex'), '\n'))]",
     "customDataCombined": "[concat(variables('customDataHeader'),variables('customDataBody'),variables('customDataLicenseHeader'), variables('customDataFortiFlex'), parameters('fortiGateLicenseBYOL'), variables('customDataFooter'))]",
     "fgtCustomData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOL'),''),equals(parameters('fortiGateLicenseFortiFlex'),'')),variables('customDataBody'),variables('customDataCombined')))]",
-    "routeTableProtectedName": "[concat(parameters('customerName'),'-rt-transit-prod-',resourceGroup().location, '-000')]",
-    "routeTableProtectedId": "[resourceId('Microsoft.Network/routeTables',variables('routeTableProtectedName'))]",
+    "routeTableName": "[concat(parameters('customerName'),'-rt-transit-prod-',resourceGroup().location, '-000')]",
+    "routeTableId": "[resourceId('Microsoft.Network/routeTables',variables('routeTableName'))]",
     "fgtNic1Name": "[concat(variables('fgtVmName'),'-Nic1')]",
     "fgtNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgtNic1Name'))]",
     "fgtNic2Name": "[concat(variables('fgtVmName'),'-Nic2')]",
@@ -532,12 +532,15 @@
     },
     {
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
-      "name": "[variables('vnetName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2022-05-01",
+      "name": "[variables('vnetName')]",
       "location": "[parameters('location')]",
+      "tags": {
+        "iv-monitoringEnabled": "false"
+      },
       "dependsOn": [
-        "[variables('routeTableProtectedId')]"
+        "[variables('routeTableId')]"
       ],
       "properties": {
         "addressSpace": {
@@ -549,7 +552,10 @@
           {
             "name": "[variables('subnet1Name')]",
             "properties": {
-              "addressPrefix": "[parameters('subnet1Prefix')]"
+              "addressPrefix": "[parameters('subnet1Prefix')]",
+              "routeTable": {
+                "id": "[variables('routeTableId')]"
+              }
             }
           },
           {
@@ -561,10 +567,7 @@
           {
             "name": "[parameters('subnet3Name')]",
             "properties": {
-              "addressPrefix": "[parameters('subnet3Prefix')]",
-              "routeTable": {
-                "id": "[variables('routeTableProtectedId')]"
-              }
+              "addressPrefix": "[parameters('subnet3Prefix')]"
             }
           }
         ]
@@ -573,7 +576,7 @@
     {
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Network/routeTables",
-      "name": "[variables('routeTableProtectedName')]",
+      "name": "[variables('routeTableName')]",
       "apiVersion": "2022-05-01",
       "location": "[parameters('location')]",
       "tags": {
