@@ -448,6 +448,7 @@
     "pipZones": "[if(variables('useAZ'), pickZones('Microsoft.Network', 'publicIPAddresses', parameters('location'), 3), json('null'))]",
     "zone1": "[if(equals(parameters('availabilityZoneNumber'),''),pickZones('Microsoft.Compute', 'virtualMachines', parameters('location')),array(parameters('availabilityZoneNumber')))]",
     "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('customerName'),'-vnet-transit-prod-', resourceGroup().location, '-000'),parameters('vnetName'))]",
+    "subnet1Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-external-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
     "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
     "subnet2Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')))]",
     "fgtVmName": "[if(equals(parameters('fortiGateName'),''),concat(parameters('customerName'),'-vm-fgt-prod', resourceGroup().location, '-000'),parameters('fortiGateName'))]",
@@ -545,7 +546,7 @@
         },
         "subnets": [
           {
-            "name": "[parameters('subnet1Name')]",
+            "name": "[variables('subnet1Name')]",
             "properties": {
               "addressPrefix": "[parameters('subnet1Prefix')]"
             }
