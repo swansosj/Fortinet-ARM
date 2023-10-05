@@ -508,6 +508,7 @@
     },
     "fortigateBgpASN": {
       "type": "int",
+      "defaultValue": "",
       "metadata": {
         "description": "description"
       }
