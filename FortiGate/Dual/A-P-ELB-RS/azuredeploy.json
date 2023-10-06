@@ -866,7 +866,7 @@
         "dependsOn": [
             "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]",
             "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', variables('routeServerName'), variables('routeServerIpName'))]",
-            "[resourceId('Microsoft.Network/virtualHubs/bgpConnections', format('{0}/{1}', variables('routeServerName'), variables('routeServerBgp1')))]"
+            "[resourceId('Microsoft.Network/virtualHubs/bgpConnections', variables('routeServerName'), variables('routeServerBgp1'))]"
         ],
         "properties": {
             "peerIp": "[variables('sn2IPfgb')]",
