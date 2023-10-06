@@ -1442,7 +1442,7 @@
         },
         "availabilitySet": "[if(not(variables('useAZ')), variables('availabilitySetId'), json('null'))]",
         "osProfile": {
-          "computerName": "[variables('fgaVmName')]",
+          "computerName": "FGT-A",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
           "customData": "[variables('fgaCustomData')]"
@@ -1520,7 +1520,7 @@
         },
         "availabilitySet": "[if(not(variables('useAZ')), variables('availabilitySetId'), json('null'))]",
         "osProfile": {
-          "computerName": "[variables('fgbVmName')]",
+          "computerName": "FGT-B",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
           "customData": "[variables('fgbCustomData')]"
