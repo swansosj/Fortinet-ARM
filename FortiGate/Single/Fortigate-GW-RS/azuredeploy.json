@@ -324,6 +324,32 @@
         "description": "Type of public IP address"
       }
     },
+    "publicIP3NewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing",
+        "none"
+      ],
+      "metadata": {
+        "description": "Public IP for Route Server. This deployment uses a Standard SKU Azure Load Balancer and requires a Standard SKU public IP. Microsoft Azure offers a migration path from a basic to standard SKU public IP. The management IP's for both FortiGate can be set to none. If no alternative internet access is provided, the SDN Connector functionality for both HA failover and dynamic objects will not work."
+      }
+    },
+    "publicIP3Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of Route Server Public IP address, if no name is provided the default name will be provided. Leave blank if IP does not already exist."
+      }
+    },
+    "publicIP3ResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Public IP Resource Group, this value is required if an existing Public IP is selected"
+      }
+    },
     "vnetNewOrExisting": {
       "type": "string",
       "defaultValue": "new",
@@ -400,7 +426,7 @@
     },
     "subnet3Name": {
       "type": "string",
-      "defaultValue": "ProtectedASubnet",
+      "defaultValue": "Management Subnet",
       "metadata": {
         "description": "Subnet 3 Name"
       }
@@ -417,6 +443,38 @@
       "defaultValue": "10.0.2.4",
       "metadata": {
         "description": "Subnet 2 start address, 1 consecutive private IPs are required"
+      }
+    },
+    "subnet4Prefix": {
+      "type": "string",
+      "defaultValue": "10.0.3.0/24",
+      "metadata": {
+        "description": "Route Server Subnet Prefix"
+      }
+    },
+    "subnet4StartAddress": {
+      "type": "string",
+      "defaultValue": "10.0.3.4",
+      "metadata": {
+        "description": "Subnet 3 start address, 1 consecutive private IPs are required"
+      }
+    },
+    "routeServerNewOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
+      "metadata": {
+        "description": "Identify whether to use a new or existing Route Server"
+      }
+    },
+    "routeServerName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure Route Server, required if utilizing an existing Route Server. If no name is provided the default name will be the Resource Group Name as the Prefix and '-VNET' as the suffix"
       }
     },
     "serialConsole": {
@@ -483,11 +541,11 @@
         "description": "Location for all resources."
       }
     },
-    "fortinetTags": {
-      "type": "object",
-      "defaultValue": {
-        "publisher": "Fortinet",
-        "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831VM"
+    "fortigateBgpASN": {
+      "type": "int",
+      "defaultValue": 64520,
+      "metadata": {
+        "description": "description"
       }
     }
   },
@@ -509,6 +567,11 @@
     "subnet2Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet2Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')))]",
     "subnet3Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-mgmt-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
     "subnet3Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet3Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet3Name')))]",
+    "subnet4Name": "RouteServerSubnet",
+    "subnet4Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')))]",
+    "routeServerName": "[if(equals(parameters('routeServerNewOrExisting'),'new'),concat(parameters('customerName'),'-rtserve-transit-prod-',resourceGroup().location,'-000'),parameters('routeServerName'))]",
+    "routeServerIpName": "ipconfig1",
+    "routeServerBgp1": "fga",
     "fgtVmName": "[if(equals(parameters('fortiGateName'),''),concat(parameters('customerName'),'-vm-fgt-prod', resourceGroup().location, '-000'),parameters('fortiGateName'))]",
     "fmgCustomData": "[if(equals(parameters('fortiManager'),'yes'),concat('\nconfig system central-management\nset type fortimanager\n set fmg ',parameters('fortiManagerIP'),'\nset serial-number ', parameters('fortiManagerSerial'), '\nend\n config system interface\n edit port1\n append allowaccess fgfm\n end\n config system interface\n edit port2\n append allowaccess fgfm\n end\n'),'')]",
     "customDataHeader": "Content-Type: multipart/mixed; boundary=\"12345\"\nMIME-Version: 1.0\n\n--12345\nContent-Type: text/plain; charset=\"us-ascii\"\nMIME-Version: 1.0\nContent-Transfer-Encoding: 7bit\nContent-Disposition: attachment; filename=\"config\"\n\n",
@@ -537,6 +600,8 @@
     "publicIP2AddressId": {
       "id": "[variables('publicIP2Id')]"
     },
+    "publicIP3Name": "[if(equals(parameters('publicIP3Name'),''),concat(parameters('customerName'),'-pip-rtserve-prod',resourceGroup().location,'-001'),parameters('publicIP3Name'))]",
+    "publicIP3Id": "[if(equals(parameters('publicIP3NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP3Name')),resourceId(parameters('publicIP3ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP3Name')))]",
     "NSGName": "[concat(parameters('customerName'),'-nsg-transit-default-prod', resourceGroup().location, '-000')]",
     "NSGId": "[resourceID('Microsoft.Network/networkSecurityGroups/',variables('NSGName'))]",
     "sn1IPArray": "[split(parameters('subnet1Prefix'),'.')]",
@@ -570,6 +635,13 @@
     "sn3IPArray0": "[string(int(variables('sn3IPArray')[0]))]",
     "sn3IPStartAddress": "[split(parameters('subnet3StartAddress'),'.')]",
     "sn3IPfgt": "[concat(variables('sn3IPArray0'),'.',variables('sn3IPArray1'),'.',variables('sn3IPArray2'),'.',int(variables('sn3IPStartAddress')[3]))]",
+    "sn4IPArray": "[split(parameters('subnet4Prefix'),'.')]",
+    "sn4IPArray2": "[string(int(variables('sn4IPArray')[2]))]",
+    "sn4IPArray1": "[string(int(variables('sn4IPArray')[1]))]",
+    "sn4IPArray0": "[string(int(variables('sn4IPArray')[0]))]",
+    "sn4IPStartAddress": "[split(parameters('subnet4StartAddress'),'.')]",
+    "sn4IPrsIP1": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',int(variables('sn4IPStartAddress')[3]))]",
+    "sn4IPrsIP2": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',int(variables('sn4IPStartAddress')[4]))]",
     "imageReferenceMarketplace": {
       "publisher": "[variables('imagePublisher')]",
       "offer": "[variables('imageOffer')]",
@@ -609,6 +681,9 @@
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2023-04-01",
       "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[variables('routeTableID')]"
+      ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -619,22 +694,31 @@
           {
             "name": "[variables('subnet1Name')]",
             "properties": {
-              "addressPrefix": "[parameters('subnet1Prefix')]"
-            }
-          },
-          {
-            "name": "[variables('subnet2Name')]",
-            "properties": {
-              "addressPrefix": "[parameters('subnet2Prefix')]",
+              "addressPrefix": "[parameters('subnet1Prefix')]",
               "routeTable": {
                 "id": "[variables('routeTableId')]"
               }
             }
           },
           {
+            "name": "[variables('subnet2Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnet2Prefix')]"
+            }
+          },
+          {
             "name": "[variables('subnet3Name')]",
             "properties": {
-              "addressPrefix": "[parameters('subnet3Prefix')]"
+              "addressPrefix": "[parameters('subnet3Prefix')]",
+              "routeTable": {
+                "id": "[variables('routeTableId')]"
+              }
+            }
+          },
+          {
+            "name": "[variables('subnet4Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnet4Prefix')]"
             }
           }
         ]
@@ -652,30 +736,75 @@
       "properties": {
         "routes": [
           {
-            "name": "VirtualNetwork",
-            "properties": {
-              "addressPrefix": "[parameters('vnetAddressPrefix')]",
-              "nextHopType": "VirtualAppliance",
-              "nextHopIPAddress": "[variables('sn2IPfgt')]"
-            }
-          },
-          {
-            "name": "Subnet",
-            "properties": {
-              "addressPrefix": "[parameters('subnet3Prefix')]",
-              "nextHopType": "VnetLocal"
-            }
-          },
-          {
             "name": "Default",
             "properties": {
               "addressPrefix": "0.0.0.0/0",
-              "nextHopType": "VirtualAppliance",
+              "nextHopType": "Internet",
               "nextHopIPAddress": "[variables('sn2IPfgt')]"
             }
           }
         ]
       }
+    },
+    {
+        "condition": "[equals(parameters('routeServerNewOrExisting'), 'new')]",
+        "type": "Microsoft.Network/virtualHubs",
+        "name": "[variables('routeServerName')]",
+        "apiVersion": "2023-04-01",
+        "location": "[parameters('location')]",
+        "kind": "RouteServer",
+        "dependsOn": [
+          "[variables('vnetName')]"
+        ],
+        "properties": {
+            "virtualHubRouteTableV2s": [],
+            "virtualRouterAsn": 65515,
+            "virtualRouterIps": [
+                "[variables('sn4IPrsIP1')]",
+                "[variables('sn4IPrsIP2')]"
+            ],
+            "routeTable": {
+                "routes": []
+            },
+            "virtualRouterAutoScaleConfiguration": {
+                "minCapacity": 2
+            },
+            "sku": "Standard",
+            "routingState": "Provisioned",
+            "allowBranchToBranchTraffic": false,
+            "hubRoutingPreference": "VpnGateway"
+        }
+    },
+    {
+        "condition": "[equals(parameters('routeServerNewOrExisting'), 'new')]",
+        "type": "Microsoft.Network/virtualHubs/ipConfigurations",
+        "name": "[format('{0}/{1}', variables('routeServerName'), variables('routeServerIpName'))]",
+        "apiVersion": "2023-04-01",
+        "dependsOn": [
+            "[variables('publicIP3Id')]",
+            "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]"
+        ],
+        "properties": {
+            "publicIPAddress": {
+                "id": "[variables('publicIP3Id')]"
+            },
+            "subnet": {
+                "id": "[variables('subnet4Id')]"
+            }
+        }
+    },
+    {
+        "type": "Microsoft.Network/virtualHubs/bgpConnections",
+        "apiVersion": "2023-04-01",
+        "name": "[format('{0}/{1}', variables('routeServerName'), variables('routeServerBgp1'))]",
+        "dependsOn": [
+            "[resourceId('Microsoft.Network/virtualHubs',variables('routeServerName'))]",
+            "[resourceId('Microsoft.Network/virtualHubs/ipConfigurations', variables('routeServerName'), variables('routeServerIpName'))]"
+        ],
+        "properties": {
+            "peerIp": "[variables('sn2IPfgt')]",
+            "peerAsn": "[parameters('fortigateBgpASN')]"
+        }
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -794,8 +923,7 @@
         "iv-monitoringEnabled": "false"
       },
       "dependsOn": [
-        "[variables('vnetName')]",
-        "[variables('NSGId')]"
+        "[variables('vnetName')]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -811,10 +939,7 @@
           }
         ],
         "enableIPForwarding": true,
-        "enableAcceleratedNetworking": "[parameters('acceleratedNetworking')]",
-        "networkSecurityGroup": {
-          "id": "[variables('NSGId')]"
-        }
+        "enableAcceleratedNetworking": "[parameters('acceleratedNetworking')]"
       }
     },
     {
