@@ -218,17 +218,6 @@
         "description": "Public IP Resource Group, this value is required if an existing Public IP is selected"
       }
     },
-    "publicIP1AddressType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
-      }
-    },
     "publicIP2NewOrExisting": {
       "type": "string",
       "defaultValue": "new",
@@ -994,13 +983,6 @@
     }
   ],
   "outputs": {
-    "fortiGatePublicIP": {
-      "type": "string",
-      "value": "[if(and(equals(parameters('publicIP1NewOrExisting'), 'new'),equals(parameters('publicIP1AddressType'),'Standard')), reference(variables('publicIP1Id')).ipAddress, '')]"
-    },
-    "fortiGateFQDN": {
-      "type": "string",
-      "value": "[if(equals(parameters('publicIP1NewOrExisting'), 'new'), reference(variables('publicIP1Id')).dnsSettings.fqdn, '' )]"
-    }
+
   }
 }
