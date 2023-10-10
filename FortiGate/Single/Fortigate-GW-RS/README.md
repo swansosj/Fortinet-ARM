@@ -4,9 +4,11 @@
 
 ## Introduction
 
-This template is for a Active Passive HA Pair of Fortigates with External Load Balancer and Route Server
+This template is for a Single Fortigate with Route Server
 
 ## Design
+
+![fortigate with route server design](images/fgt-single-gw-rs.png)
 
 ## Deployment
 
