@@ -706,8 +706,7 @@
             "name": "Default",
             "properties": {
               "addressPrefix": "0.0.0.0/0",
-              "nextHopType": "Internet",
-              "nextHopIPAddress": "[variables('sn2IPfgt')]"
+              "nextHopType": "Internet"
             }
           }
         ]
