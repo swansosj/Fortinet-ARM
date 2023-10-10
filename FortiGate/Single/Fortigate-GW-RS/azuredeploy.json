@@ -641,7 +641,7 @@
     "sn4IPArray0": "[string(int(variables('sn4IPArray')[0]))]",
     "sn4IPStartAddress": "[split(parameters('subnet4StartAddress'),'.')]",
     "sn4IPrsIP1": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',int(variables('sn4IPStartAddress')[3]))]",
-    "sn4IPrsIP2": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',int(variables('sn4IPStartAddress')[4]))]",
+    "sn4IPrsIP2": "[concat(variables('sn4IPArray0'),'.',variables('sn4IPArray1'),'.',variables('sn4IPArray2'),'.',add(int(variables('sn4IPStartAddress')[3]),1))]",
     "imageReferenceMarketplace": {
       "publisher": "[variables('imagePublisher')]",
       "offer": "[variables('imageOffer')]",
