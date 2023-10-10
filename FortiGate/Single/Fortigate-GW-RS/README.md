@@ -62,7 +62,7 @@ Existing VNET Parameters:
 - SUBNET 3 MANAGEMENT PREFIX: Prefix of management subnet.
 - SUBNET 4 EXTERNAL START ADDRESS: Next usable address in the subnet.
 - SUBNET 4 ROUTE SERVER PREFIX: Address prefix of RouteServerSubnet.
-- SUBNET 4 EXTERNAL START ADDRESS: First usable address of the prefix even if in use. Will be the lowest address of the Route Server.
+- SUBNET 4 EXTERNAL START ADDRESS: Lowest address in use by the Route Server.
 - FORTIGATE BGP ASN: BGP ASN number of the Fortigate.
 
 ### Azure Portal
