@@ -265,17 +265,6 @@
         "description": "Type of public IP address"
       }
     },
-    "publicIP1SKU": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
-      }
-    },
     "publicIP2NewOrExisting": {
       "type": "string",
       "defaultValue": "new",
@@ -300,28 +289,6 @@
       "defaultValue": "",
       "metadata": {
         "description": "Public IP Resource Group, this value is required if an existing Public IP is selected"
-      }
-    },
-    "publicIP2AddressType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
-      }
-    },
-    "publicIP2SKU": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Type of public IP address"
       }
     },
     "publicIP3NewOrExisting": {
@@ -600,9 +567,9 @@
     "publicIP2AddressId": {
       "id": "[variables('publicIP2Id')]"
     },
-    "publicIP3Name": "[if(equals(parameters('publicIP3Name'),''),concat(parameters('customerName'),'-pip-rtserve-prod',resourceGroup().location,'-001'),parameters('publicIP3Name'))]",
+    "publicIP3Name": "[if(equals(parameters('publicIP3Name'),''),concat(parameters('customerName'),'-pip-rtserve-prod-',resourceGroup().location,'-000'),parameters('publicIP3Name'))]",
     "publicIP3Id": "[if(equals(parameters('publicIP3NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP3Name')),resourceId(parameters('publicIP3ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP3Name')))]",
-    "NSGName": "[concat(parameters('customerName'),'-nsg-transit-default-prod', resourceGroup().location, '-000')]",
+    "NSGName": "[concat(parameters('customerName'),'-nsg-transit-default-prod-', resourceGroup().location, '-000')]",
     "NSGId": "[resourceID('Microsoft.Network/networkSecurityGroups/',variables('NSGName'))]",
     "sn1IPArray": "[split(parameters('subnet1Prefix'),'.')]",
     "sn1IPArray2ndString": "[string(variables('sn1IPArray')[3])]",
@@ -857,11 +824,11 @@
         "iv-monitoringEnabled": "false"
       },
       "sku": {
-        "name": "[parameters('publicIP1SKU')]"
+        "name": "Standard"
       },
       "zones": "[variables('pipZones')]",
       "properties": {
-        "publicIPAllocationMethod": "[parameters('publicIP1AddressType')]"
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
@@ -874,11 +841,28 @@
         "iv-monitoringEnabled": "false"
       },
       "sku": {
-        "name": "[parameters('publicIP2SKU')]"
+        "name": "Standard"
       },
       "zones": "[variables('pipZones')]",
       "properties": {
-        "publicIPAllocationMethod": "[parameters('publicIP2AddressType')]"
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "condition": "[equals(parameters('publicIP3NewOrExisting'), 'new')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIP3Name')]",
+      "apiVersion": "2022-05-01",
+      "location": "[parameters('location')]",
+      "tags": {
+        "iv-monitoringEnabled": "false"
+      },
+      "sku": {
+        "name": "Standard"
+      },
+      "zones": "[variables('pipZones')]",
+      "properties": {
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
