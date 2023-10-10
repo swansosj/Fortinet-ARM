@@ -12,7 +12,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "description"
+        "description": "Name of the Fortigate. If left blank default name will be used."
       }
     },
     "adminUsername": {
@@ -86,7 +86,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The ARM template provides a basic configuration. Additional configuration can be added here."
+        "description": "The ARM template provides a basic configuration. Additional CLI configuration can be added here."
       }
     },
     "instanceType": {
@@ -208,7 +208,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Name of Public IP address, if no name is provided the default name will be the Resource Group Name as the Prefix and '-FGT-PIP' as the suffix"
+        "description": "Name of Public IP address, if no name is provided the default name will be provided. Leave blank if IP does not already exist."
       }
     },
     "publicIP1ResourceGroup": {
@@ -227,14 +227,14 @@
         "none"
       ],
       "metadata": {
-        "description": "Choose between an existing or new public IP address linked to the external interface of the FortiGate VM"
+        "description": "Choose between an existing or new public IP address linked to the management interface of the FortiGate VM"
       }
     },
     "publicIP2Name": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Name of Public IP address, if no name is provided the default name will be the Resource Group Name as the Prefix and '-FGT-PIP' as the suffix"
+        "description": "Name of Public IP address, if no name is provided the default name will be provided. Leave blank if IP does not already exist."
       }
     },
     "publicIP2ResourceGroup": {
@@ -253,7 +253,7 @@
         "none"
       ],
       "metadata": {
-        "description": "Public IP for Route Server. This deployment uses a Standard SKU Azure Load Balancer and requires a Standard SKU public IP. Microsoft Azure offers a migration path from a basic to standard SKU public IP. The management IP's for both FortiGate can be set to none. If no alternative internet access is provided, the SDN Connector functionality for both HA failover and dynamic objects will not work."
+        "description": "Choose between an existing or new public IP address for the Route Server"
       }
     },
     "publicIP3Name": {
@@ -285,7 +285,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Name of the Azure virtual network, required if utilizing an existing VNET. If no name is provided the default name will be the Resource Group Name as the Prefix and '-VNET' as the suffix"
+        "description": "Name of the Azure virtual network, required if utilizing an existing VNET. If no name is provided the default name will be provided."
       }
     },
     "vnetResourceGroup": {
@@ -304,79 +304,79 @@
     },
     "subnet1Name": {
       "type": "string",
-      "defaultValue": "ExternalSubnet",
+      "defaultValue": "",
       "metadata": {
-        "description": "Subnet 1 Name"
+        "description": "Name of External Subnet. If no name is provided the default will be provided."
       }
     },
     "subnet1Prefix": {
       "type": "string",
       "defaultValue": "10.0.0.0/24",
       "metadata": {
-        "description": "Subnet 1 Prefix"
+        "description": "External Subnet address prefix"
       }
     },
     "subnet1StartAddress": {
       "type": "string",
       "defaultValue": "10.0.0.4",
       "metadata": {
-        "description": "Subnet 1 start address, 1 consecutive private IPs are required"
+        "description": "External start address, 1 consecutive private IP are required. Azure reserves the three IPs in each subnet."
       }
     },
     "subnet2Name": {
       "type": "string",
-      "defaultValue": "InternalSubnet",
+      "defaultValue": "",
       "metadata": {
-        "description": "Subnet 2 Subnet"
+        "description": "Name of Internal Subnet. If no name is provided the default will be provided."
       }
     },
     "subnet2Prefix": {
       "type": "string",
       "defaultValue": "10.0.1.0/24",
       "metadata": {
-        "description": "Subnet 2 Prefix"
+        "description": "Internal Subnet address prefix."
       }
     },
     "subnet2StartAddress": {
       "type": "string",
       "defaultValue": "10.0.1.4",
       "metadata": {
-        "description": "Subnet 2 start address, 1 consecutive private IPs are required"
+        "description": "Internal start address, 1 consecutive private IP are required. Azure reserves the three IPs in each subnet."
       }
     },
     "subnet3Name": {
       "type": "string",
-      "defaultValue": "Management Subnet",
+      "defaultValue": "",
       "metadata": {
-        "description": "Subnet 3 Name"
+        "description": "Name of Managment Subnet. If no name is provided the default will be provided."
       }
     },
     "subnet3Prefix": {
       "type": "string",
       "defaultValue": "10.0.2.0/24",
       "metadata": {
-        "description": "Subnet 3 Prefix"
+        "description": "Management Subnet address prefix."
       }
     },
     "subnet3StartAddress": {
       "type": "string",
       "defaultValue": "10.0.2.4",
       "metadata": {
-        "description": "Subnet 2 start address, 1 consecutive private IPs are required"
+        "description": "Management start address, 1 consecutive private IP are required. Azure reserves the three IPs in each subnet."
       }
     },
     "subnet4Prefix": {
       "type": "string",
       "defaultValue": "10.0.3.0/24",
       "metadata": {
-        "description": "Route Server Subnet Prefix"
+        "description": "Route Server Subnet Prefix. Requires at least a /27."
       }
     },
     "subnet4StartAddress": {
       "type": "string",
       "defaultValue": "10.0.3.4",
       "metadata": {
-        "description": "Subnet 3 start address, 1 consecutive private IPs are required"
+        "description": "Route Server Subnet start address, 2 consecutive private IP are required. Azure reserves the three IPs in each subnet. If Route Server is existing this will be lowest IP address of the route server."
       }
     },
     "routeServerNewOrExisting": {
@@ -394,7 +394,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Name of the Azure Route Server, required if utilizing an existing Route Server. If no name is provided the default name will be the Resource Group Name as the Prefix and '-VNET' as the suffix"
+        "description": "Name of the Azure Route Server, required if utilizing an existing Route Server. If no name is provided the default name will be provided."
       }
     },
     "serialConsole": {
@@ -465,7 +465,7 @@
       "type": "int",
       "defaultValue": 64520,
       "metadata": {
-        "description": "description"
+        "description": "BGP ASN of teh Fortigate."
       }
     }
   },
@@ -481,11 +481,11 @@
     "pipZones": "[if(variables('useAZ'), pickZones('Microsoft.Network', 'publicIPAddresses', parameters('location'), 3), json('null'))]",
     "zone1": "[if(equals(parameters('availabilityZoneNumber'),''),pickZones('Microsoft.Compute', 'virtualMachines', parameters('location')),array(parameters('availabilityZoneNumber')))]",
     "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('customerName'),'-vnet-transit-prod-', resourceGroup().location, '-000'),parameters('vnetName'))]",
-    "subnet1Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-external-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
+    "subnet1Name": "[if(equals(parameters('subnet1Name'),''),concat(parameters('customerName'),'-snet-fw-external-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
     "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
-    "subnet2Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-internal-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
+    "subnet2Name": "[if(equals(parameters('subnet2Name'),''),concat(parameters('customerName'),'-snet-fw-internal-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
     "subnet2Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet2Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')))]",
-    "subnet3Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-mgmt-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
+    "subnet3Name": "[if(equals(parameters('subnet3Name'),''),concat(parameters('customerName'),'-snet-fw-mgmt-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
     "subnet3Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet3Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet3Name')))]",
     "subnet4Name": "RouteServerSubnet",
     "subnet4Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet4Name')))]",
