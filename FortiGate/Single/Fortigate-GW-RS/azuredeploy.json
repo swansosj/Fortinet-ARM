@@ -555,7 +555,7 @@
     "fgtNic2Name": "[concat(parameters('customerName'), '-nic-fw-internal-prod-', resourceGroup().location, '-000')]",
     "fgtNic2Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgtNic2Name'))]",
     "fgtNic3Name": "[concat(parameters('customerName'), '-nic-fw-mgmt-prod-', resourceGroup().location, '-000')]",
-    "fgtNic3Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgtNic2Name'))]",
+    "fgtNic3Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgtNic3Name'))]",
     "serialConsoleEnabled": "[if(equals(parameters('serialConsole'),'yes'),'true','false')]",
     "publicIP1Name": "[if(equals(parameters('publicIP1Name'),''),concat(parameters('customerName'),'-pip-fw-external-', resourceGroup().location, '-000'),parameters('publicIP1Name'))]",
     "publicIP1Id": "[if(equals(parameters('publicIP1NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP1Name')),resourceId(parameters('publicIP1ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP1Name')))]",
