@@ -50,21 +50,20 @@ New VNET Parameters:
 
 Existing VNET Parameters:
 
-- VNET NAME:
-- VNET ADDRESS PREFIX:
-- SUBNET 1 EXTERNAL NAME:
-- SUBNET 1 EXTERNAL PREFIX:
-- SUBNET 1 EXTERNAL START ADDRESS:
-- SUBNET 2 INTERNAL NAME:
-- SUBNET 2 INTERNAL PREFIX:
-- SUBNET 2 EXTERNAL START ADDRESS:
-- SUBNET 3 MANAGEMENT NAME:
-- SUBNET 3 MANAGEMENT PREFIX:
-- SUBNET 4 EXTERNAL START ADDRESS:
-- SUBNET 4 ROUTE SERVER NAME:
-- SUBNET 4 ROUTE SERVER PREFIX:
-- SUBNET 4 EXTERNAL START ADDRESS:
-- FORTIGATE BGP ASN:
+- VNET NAME: Name of the existing VNET.
+- VNET ADDRESS PREFIX: Address prefix of the VNET.
+- SUBNET 1 EXTERNAL NAME: Subnet name where external interface will be deployed.
+- SUBNET 1 EXTERNAL PREFIX: Prefix of external subnet.
+- SUBNET 1 EXTERNAL START ADDRESS: Next usable address in the subnet.
+- SUBNET 2 INTERNAL NAME: Subnet name where internal interface will be deployed.
+- SUBNET 2 INTERNAL PREFIX: Prefix of internal subnet.
+- SUBNET 2 EXTERNAL START ADDRESS: Next usable address in the subnet.
+- SUBNET 3 MANAGEMENT NAME: Subnet name where managment interface will be deployed.
+- SUBNET 3 MANAGEMENT PREFIX: Prefix of management subnet.
+- SUBNET 4 EXTERNAL START ADDRESS: Next usable address in the subnet.
+- SUBNET 4 ROUTE SERVER PREFIX: Address prefix of RouteServerSubnet.
+- SUBNET 4 EXTERNAL START ADDRESS: First usable address of the prefix even if in use. Will be the lowest address of the Route Server.
+- FORTIGATE BGP ASN: BGP ASN number of the Fortigate.
 
 ### Azure Portal
 
