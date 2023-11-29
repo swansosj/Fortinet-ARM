@@ -1026,10 +1026,7 @@
       },
       "zones": "[variables('pipZones')]",
       "properties": {
-        "publicIPAllocationMethod": "Static",
-        "dnsSettings": {
-          "domainNameLabel": "[concat(toLower(parameters('customerName')), '-', uniquestring(resourceGroup().id))]"
-        }
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
