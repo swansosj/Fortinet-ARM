@@ -34,6 +34,62 @@
         "description": "Name of Fortigate B"
       }
     },
+    "fgaNic1Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FGT A External NIC Name"
+      }
+    },
+    "fgaNic2Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FGT A Internal NIC Name"
+      }
+    },
+    "fgaNic3Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FGT A HA NIC Name"
+      }
+    },
+    "fgaNic4Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FGT A MGMT NIC Name"
+      }
+    },
+    "fgbNic1Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FGT B External NIC Name"
+      }
+    },
+    "fgbNic2Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FGT B Internal NIC Name"
+      }
+    },
+    "fgbNic3Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FGT B HA NIC Name"
+      }
+    },
+    "fgbNic4Name": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "FGT B MGMT NIC Name"
+      }
+    },
     "fortiGateImageSKU": {
       "type": "string",
       "defaultValue": "fortinet_fg-vm",
@@ -225,7 +281,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Name of FortiaGate 000 Public IP address, if no name is provided the default name will be provided. Leave blank if IP does not already exist."
+        "description": "Name of FortiaGate A Public IP address, if no name is provided the default name will be provided. Leave blank if IP does not already exist."
       }
     },
     "publicIP2ResourceGroup": {
@@ -251,7 +307,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Name of FortiaGate 001 Public IP address, if no name is provided the default name will be provided. Leave blank if IP does not already exist."
+        "description": "Name of FortiaGate B Public IP address, if no name is provided the default name will be provided. Leave blank if IP does not already exist."
       }
     },
     "publicIP3ResourceGroup": {
@@ -285,6 +341,20 @@
       "defaultValue": "",
       "metadata": {
         "description": "Public IP Resource Group, this value is required if an existing Public IP is selected"
+      }
+    },
+    "routeTableName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of Route Table for Public IPs"
+      }
+    },
+    "NSGName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "description"
       }
     },
     "vnetNewOrExisting": {
@@ -442,6 +512,20 @@
         "description": "Name of the Azure Route Server, required if utilizing an existing Route Server. If no name is provided the default name will be the Resource Group Name as the Prefix and '-VNET' as the suffix"
       }
     },
+    "internalLBName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of Internal Load Balancer"
+      }
+    },
+    "externalLBName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of External Load Balancer"
+      }
+    },
     "serialConsole": {
       "type": "string",
       "defaultValue": "yes",
@@ -571,23 +655,23 @@
     "fgbCustomDataCombined": "[concat(variables('customDataHeader'),variables('fgbCustomDataBody'),variables('customDataLicenseHeader'), variables('fgbCustomDataFortiFlex'), parameters('fortiGateLicenseBYOLB'), variables('customDataFooter'))]",
     "fgaCustomData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLA'),''),equals(parameters('fortiGateLicenseFortiFlexA'),'')),variables('fgaCustomDataBody'),variables('fgaCustomDataCombined')))]",
     "fgbCustomData": "[base64(if(and(equals(parameters('fortiGateLicenseBYOLB'),''),equals(parameters('fortiGateLicenseFortiFlexB'),'')),variables('fgbCustomDataBody'),variables('fgbCustomDataCombined')))]",
-    "routeTableName": "[concat(parameters('customerName'),'-rt-transit-default-prod-', resourceGroup().location, '-000')]",
+    "routeTableName": "[if(equals(parameters('routeTableName'),''),concat(parameters('customerName'),'-rt-transit-default-prod-', resourceGroup().location, '-000'),parameters('routeTableName'))]",
     "routeTableId": "[resourceId('Microsoft.Network/routeTables',variables('routeTableName'))]",
-    "fgaNic1Name": "[concat(parameters('customerName'),'-nic-fw-external-prod-',resourceGroup().location,'-000')]",
+    "fgaNic1Name": "[if(equals(parameters('fgaNic1Name'), ''),concat(parameters('customerName'), '-nic-fw-external-prod-', resourceGroup().location, '-000'), parameters('fgaNic1Name'))]",
     "fgaNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic1Name'))]",
-    "fgbNic1Name": "[concat(parameters('customerName'),'-nic-fw-external-prod-',resourceGroup().location,'-001')]",
+    "fgbNic1Name": "[if(equals(parameters('fgbNic1Name'), ''),concat(parameters('customerName'), '-nic-fw-external-prod-', resourceGroup().location, '-001'), parameters('fgbNic1Name'))]",
     "fgbNic1Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgbNic1Name'))]",
-    "fgaNic2Name": "[concat(parameters('customerName'),'-nic-fw-internal-prod-',resourceGroup().location,'-000')]",
+    "fgaNic2Name": "[if(equals(parameters('fgaNic2Name'), ''),concat(parameters('customerName'), '-nic-fw-internal-prod-', resourceGroup().location, '-000'), parameters('fgaNic2Name'))]",
     "fgaNic2Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic2Name'))]",
-    "fgbNic2Name": "[concat(parameters('customerName'),'-nic-fw-internal-prod-',resourceGroup().location,'-001')]",
+    "fgbNic2Name": "[if(equals(parameters('fgbNic2Name'), ''),concat(parameters('customerName'), '-nic-fw-internal-prod-', resourceGroup().location, '-001'), parameters('fgbNic2Name'))]",
     "fgbNic2Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgbNic2Name'))]",
-    "fgaNic3Name": "[concat(parameters('customerName'),'-nic-fw-ha-prod-',resourceGroup().location,'-000')]",
+    "fgaNic3Name": "[if(equals(parameters('fgaNic3Name'), ''),concat(parameters('customerName'), '-nic-fw-ha-prod-', resourceGroup().location, '-000'), parameters('fgaNic3Name'))]",
     "fgaNic3Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic3Name'))]",
-    "fgbNic3Name": "[concat(parameters('customerName'),'-nic-fw-ha-prod-',resourceGroup().location,'-001')]",
+    "fgbNic3Name": "[if(equals(parameters('fgbNic3Name'), ''),concat(parameters('customerName'), '-nic-fw-ha-prod-', resourceGroup().location, '-001'), parameters('fgbNic3Name'))]",
     "fgbNic3Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgbNic3Name'))]",
-    "fgaNic4Name": "[concat(parameters('customerName'),'-nic-fw-mgmt-prod-',resourceGroup().location,'-000')]",
+    "fgaNic4Name": "[if(equals(parameters('fgaNic4Name'), ''),concat(parameters('customerName'), '-nic-fw-mgmt-prod-', resourceGroup().location, '-000'), parameters('fgaNic4Name'))]",
     "fgaNic4Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgaNic4Name'))]",
-    "fgbNic4Name": "[concat(parameters('customerName'),'-nic-fw-mgmt-prod-',resourceGroup().location,'-001')]",
+    "fgbNic4Name": "[if(equals(parameters('fgbNic4Name'), ''),concat(parameters('customerName'), '-nic-fw-mgmt-prod-', resourceGroup().location, '-001'), parameters('fgbNic4Name'))]",
     "fgbNic4Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('fgbNic4Name'))]",
     "serialConsoleEnabled": "[if(equals(parameters('serialConsole'),'yes'),'true','false')]",
     "publicIP1Name": "[if(equals(parameters('publicIP1Name'),''),concat(parameters('customerName'),'-pip-fw-elb-prod-',resourceGroup().location,'-000'),parameters('publicIP1Name'))]",
@@ -602,9 +686,9 @@
     "publicIPAddress3Id": {
       "id": "[variables('publicIP3Id')]"
     },
-    "publicIP4Name": "[if(equals(parameters('publicIP4Name'),''),concat(parameters('customerName'),'-pip-rtserve-prod',resourceGroup().location,'-001'),parameters('publicIP4Name'))]",
+    "publicIP4Name": "[if(equals(parameters('publicIP4Name'),''),concat(parameters('customerName'),'-pip-rtserve-prod-',resourceGroup().location,'-000'),parameters('publicIP4Name'))]",
     "publicIP4Id": "[if(equals(parameters('publicIP4NewOrExisting'),'new'),resourceId('Microsoft.Network/publicIPAddresses',variables('publicIP4Name')),resourceId(parameters('publicIP4ResourceGroup'),'Microsoft.Network/publicIPAddresses',variables('publicIP4Name')))]",
-    "NSGName": "[concat(parameters('customerName'),'-nsg-fw-default-prod', resourceGroup().location, '-000')]",
+    "NSGName": "[if(equals(parameters('NSGName'),''),concat(parameters('customerName'),'-nsg-fw-default-prod-',resourceGroup().location,'-000'),parameters('NSGName'))]",
     "NSGId": "[resourceID('Microsoft.Network/networkSecurityGroups/',variables('NSGName'))]",
     "sn1IPArray": "[split(parameters('subnet1Prefix'),'.')]",
     "sn1IPArray2ndString": "[string(variables('sn1IPArray')[3])]",
@@ -660,7 +744,7 @@
     "sn5IPStartAddress": "[split(parameters('subnet5StartAddress'),'.')]",
     "sn5IPrsIP1": "[concat(variables('sn5IPArray0'),'.',variables('sn5IPArray1'),'.',variables('sn5IPArray2'),'.',int(variables('sn5IPStartAddress')[3]))]",
     "sn5IPrsIP2": "[concat(variables('sn5IPArray0'),'.',variables('sn5IPArray1'),'.',variables('sn5IPArray2'),'.',add(int(variables('sn5IPStartAddress')[3]),1))]",
-    "internalLBName": "[concat(parameters('customerName'),'-ilb-prod-',resourceGroup().location,'-000')]",
+    "internalLBName": "[if(equals(parameters('internalLBName'),''),concat(parameters('customerName'),'-ilb-fw-prod-',resourceGroup().location,'-000'),parameters('internalLBName'))]",
     "internalLBId": "[resourceID('Microsoft.Network/loadBalancers',variables('internalLBName'))]",
     "internalLBFEName": "[concat(parameters('customerName'),'-ilb-fe-prod-',resourceGroup().location,'-000')]",
     "internalLBFEId": "[resourceID('Microsoft.Network/loadBalancers/frontendIPConfigurations/',variables('internalLBName'),variables('internalLBFEName'))]",
@@ -668,7 +752,7 @@
     "internalLBBEId": "[resourceID('Microsoft.Network/loadBalancers/backendAddressPools/',variables('internalLBName'),variables('internalLBBEName'))]",
     "internalLBProbeName": "lbprobe",
     "internalLBProbeId": "[resourceId('Microsoft.Network/loadBalancers/probes/',variables('internalLBName'),variables('internalLBProbeName'))]",
-    "externalLBName": "[concat(parameters('customerName'),'-elb-prod-',resourceGroup().location, '-000')]",
+    "externalLBName": "[if(equals(parameters('externalLBName'),''),concat(parameters('customerName'),'-elb-fw-prod-',resourceGroup().location,'-000'),parameters('externalLBName'))]",
     "externalLBId": "[resourceId('Microsoft.Network/loadBalancers',variables('externalLBName'))]",
     "externalLBFEName": "[concat(parameters('customerName'),'-elb-fe-prod-', resourceGroup().location, '-000')]",
     "externalLBFEId": "[resourceID('Microsoft.Network/loadBalancers/frontendIPConfigurations/',variables('externalLBName'),variables('externalLBFEName'))]",
