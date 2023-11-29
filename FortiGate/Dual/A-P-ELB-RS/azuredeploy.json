@@ -307,16 +307,16 @@
     },
     "subnet1Name": {
       "type": "string",
-      "defaultValue": "ExternalSubnet",
+      "defaultValue": "",
       "metadata": {
-        "description": "Subnet 1 Name"
+        "description": "External Subnet Name"
       }
     },
     "subnet1Prefix": {
       "type": "string",
       "defaultValue": "10.0.0.0/24",
       "metadata": {
-        "description": "Subnet 1 Prefix"
+        "description": "External Subnet Prefix"
       }
     },
     "subnet1StartAddress": {
@@ -328,16 +328,16 @@
     },
     "subnet2Name": {
       "type": "string",
-      "defaultValue": "InternalSubnet",
+      "defaultValue": "",
       "metadata": {
-        "description": "Subnet 2 Name"
+        "description": "Internal Subnet Name"
       }
     },
     "subnet2Prefix": {
       "type": "string",
       "defaultValue": "10.0.1.0/24",
       "metadata": {
-        "description": "Subnet 2 Prefix"
+        "description": "Internal Subnet Prefix"
       }
     },
     "subnet2StartAddress": {
@@ -351,14 +351,14 @@
       "type": "string",
       "defaultValue": "HASyncSubnet",
       "metadata": {
-        "description": "Subnet 3 Name"
+        "description": "HA Sync Subnet Name"
       }
     },
     "subnet3Prefix": {
       "type": "string",
       "defaultValue": "10.0.3.0/24",
       "metadata": {
-        "description": "Subnet 3 Prefix"
+        "description": "HA Sync Subnet Prefix"
       }
     },
     "subnet3StartAddress": {
@@ -370,16 +370,16 @@
     },
     "subnet4Name": {
       "type": "string",
-      "defaultValue": "ManagementSubnet",
+      "defaultValue": "",
       "metadata": {
-        "description": "Subnet 4 Name"
+        "description": "Management Subnet Name"
       }
     },
     "subnet4Prefix": {
       "type": "string",
       "defaultValue": "10.0.4.0/24",
       "metadata": {
-        "description": "Subnet 4 Prefix"
+        "description": "Management Subnet Prefix"
       }
     },
     "subnet4StartAddress": {
@@ -529,10 +529,10 @@
       "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
     },
     "vnetName": "[if(equals(parameters('vnetName'),''),concat(parameters('customerName'),'-vnet-transit-prod-', resourceGroup().location, '-000'),parameters('vnetName'))]",
-    "subnet1Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-external-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
-    "subnet2Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-internal-prod-', resourceGroup().location, '-000'),parameters('subnet2Name'))]",
-    "subnet3Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-ha-prod-', resourceGroup().location, '-000'),parameters('subnet3Name'))]",
-    "subnet4Name": "[if(equals(parameters('vnetNewOrExisting'),'new'),concat(parameters('customerName'),'-snet-fw-mgmt-prod-', resourceGroup().location, '-000'),parameters('subnet4Name'))]",
+    "subnet1Name": "[if(equals(parameters('subnet1Name'),''),concat(parameters('customerName'),'-snet-fw-external-prod-', resourceGroup().location, '-000'),parameters('subnet1Name'))]",
+    "subnet2Name": "[if(equals(parameters('subnet2Name'),''),concat(parameters('customerName'),'-snet-fw-internal-prod-', resourceGroup().location, '-000'),parameters('subnet2Name'))]",
+    "subnet3Name": "[if(equals(parameters('subnet3Name'),''),concat(parameters('customerName'),'-snet-fw-ha-prod-', resourceGroup().location, '-000'),parameters('subnet3Name'))]",
+    "subnet4Name": "[if(equals(parameters('subnet4Name'),''),concat(parameters('customerName'),'-snet-fw-mgmt-prod-', resourceGroup().location, '-000'),parameters('subnet4Name'))]",
     "subnet1Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet1Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet1Name')))]",
     "subnet2Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet2Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet2Name')))]",
     "subnet3Id": "[if(equals(parameters('vnetNewOrExisting'),'new'),resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),variables('subnet3Name')),resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'),parameters('subnet3Name')))]",
