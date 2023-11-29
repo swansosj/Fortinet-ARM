@@ -433,7 +433,7 @@
     },
     "subnet3Name": {
       "type": "string",
-      "defaultValue": "HASyncSubnet",
+      "defaultValue": "",
       "metadata": {
         "description": "HA Sync Subnet Name"
       }
