@@ -31,7 +31,7 @@ This template can be utlized for deployement in an existing VNET, Availability S
 
 Standard Custom Template Deployment:
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https%3A%2F%2Fraw.githubusercontent.com%2Fswansosj%2FFortinet-ARM%2Fmain%2FFortiGate%2FDual%2FWG-A-P-ELP-RS%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https%3A%2F%2Fgithub.com%2Fswansosj%2FFortinet-ARM%2Fblob%2Fmain%2FFortiGate%2FDual%2FWG-A-P-ELP-RS%2Fazuredeploy.json)
 
 ## Requirements-and-limitations
 
