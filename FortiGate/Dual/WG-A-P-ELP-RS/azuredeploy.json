@@ -912,6 +912,12 @@
         "name": "[variables('routeServerName')]",
         "apiVersion": "2023-04-01",
         "location": "[parameters('location')]",
+        "tags": {
+        "iv-monitoringEnabled": "false",
+        "Workload": "Connectivity",
+        "Environment": "Production",
+        "Region": "EastUs"
+        },
         "kind": "RouteServer",
         "dependsOn": [
           "[variables('vnetName')]"
